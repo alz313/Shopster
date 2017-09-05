@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Shopster</string>
+    <string name="quantity">Quantity</string>
+    <string name="bought">Bought</string>
 </resources>

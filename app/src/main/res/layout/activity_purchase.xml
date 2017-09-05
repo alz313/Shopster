@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ua.in.out.shopster.PurchaseActivity">
+
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/et_activity_purchase_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Name"/>
+
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/et_activity_purchase_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/et_activity_purchase_name"
+        app:layout_constraintRight_toRightOf="@+id/et_activity_purchase_name"
+        app:layout_constraintTop_toBottomOf="@+id/et_activity_purchase_name"
+        tools:text="Description"/>
+
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/et_activity_purchase_qty"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="16dp"
+        android:inputType="number"
+        app:layout_constraintLeft_toLeftOf="@+id/et_activity_purchase_desc"
+        app:layout_constraintTop_toBottomOf="@+id/et_activity_purchase_desc"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="0dp"
+        android:text="@string/quantity"
+        app:layout_constraintLeft_toRightOf="@+id/et_activity_purchase_qty"
+        android:id="@+id/textView2"
+        app:layout_constraintBaseline_toBaselineOf="@+id/et_activity_purchase_qty"
+        android:layout_marginLeft="16dp"/>
+
+    <CheckBox
+        android:id="@+id/cb_activity_purchase_bought"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:text="@string/bought"
+        app:layout_constraintLeft_toRightOf="@+id/textView2"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="@+id/et_activity_purchase_desc"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView2"/>
+
+
+</android.support.constraint.ConstraintLayout>
