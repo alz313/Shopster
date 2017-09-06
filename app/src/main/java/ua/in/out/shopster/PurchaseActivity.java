@@ -25,8 +25,8 @@ public class PurchaseActivity extends AppCompatActivity {
     Purchase mPurchase;
 
     EditText mName;
-    EditText mDesc;
     EditText mQty;
+    EditText mUnit;
     CheckBox mIsBought;
 
 
@@ -38,8 +38,8 @@ public class PurchaseActivity extends AppCompatActivity {
         mPurchasePushId = getIntent().getStringExtra(EXTRA_PURCHASE_ID);
 
         mName = findViewById(R.id.et_activity_purchase_name);
-        mDesc = findViewById(R.id.et_activity_purchase_desc);
         mQty = findViewById(R.id.et_activity_purchase_qty);
+        mUnit = findViewById(R.id.et_activity_purchase_unit);
         mIsBought = findViewById(R.id.cb_activity_purchase_bought);
 
         if (mPurchasePushId != null) {
@@ -49,8 +49,8 @@ public class PurchaseActivity extends AppCompatActivity {
                     mPurchase = dataSnapshot.getValue(Purchase.class);
 
                     mName.setText(mPurchase.getName());
-                    mDesc.setText(mPurchase.getDesc());
-                    mQty.setText(String.format(Locale.getDefault(), "%10.2d", mPurchase.getQty()));
+                    mQty.setText(String.format(Locale.getDefault(), "%10.2f", mPurchase.getQty()));
+                    mUnit.setText(mPurchase.getUnit());
                     mIsBought.setChecked(mPurchase.getBought());
                 }
 
@@ -75,7 +75,7 @@ public class PurchaseActivity extends AppCompatActivity {
         }
 
         mPurchase.setName(mName.getText().toString());
-        mPurchase.setDesc(mDesc.getText().toString());
+        mPurchase.setUnit(mUnit.getText().toString());
         mPurchase.setQty(Double.valueOf(mQty.getText().toString()));
         mPurchase.setBought(mIsBought.isChecked());
 

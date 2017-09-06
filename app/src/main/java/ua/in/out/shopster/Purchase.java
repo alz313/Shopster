@@ -4,8 +4,8 @@ package ua.in.out.shopster;
 public class Purchase {
 
     private String mName;
-    private String mDesc;
     private Double mQty;
+    private String mUnit;
     private Boolean mIsBought;
 
 
@@ -13,10 +13,10 @@ public class Purchase {
         // Needed for Firebase
     }
 
-    public Purchase(String name, String desc, Double qty, Boolean isBought) {
+    public Purchase(String name, Double qty, String unit, Boolean isBought) {
         mName = name;
-        mDesc = desc;
         mQty = qty;
+        mUnit = unit;
         mIsBought = isBought;
     }
 
@@ -28,20 +28,20 @@ public class Purchase {
         mName = name;
     }
 
-    public String getDesc() {
-        return mDesc;
-    }
-
-    public void setDesc(String desc) {
-        mDesc = desc;
-    }
-
     public Double getQty() {
         return mQty;
     }
 
     public void setQty(Double qty) {
         mQty = qty;
+    }
+
+    public String getUnit() {
+        return mUnit;
+    }
+
+    public void setUnit(String unit) {
+        mUnit = unit;
     }
 
     public Boolean getBought() {

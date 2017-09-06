@@ -8,12 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+
+import java.util.Locale;
 
 
 public class PurchaseListActivity extends AppCompatActivity {
@@ -32,7 +35,7 @@ public class PurchaseListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent  = new Intent(PurchaseListActivity.this, PurchaseActivity.class);
+                Intent intent = new Intent(PurchaseListActivity.this, PurchaseActivity.class);
                 startActivity(intent);
 
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -60,7 +63,6 @@ public class PurchaseListActivity extends AppCompatActivity {
     }
 
 
-
     public class PurchaseListAdapter extends FirebaseRecyclerAdapter<Purchase, PurchaseHolder> {
 
         /**
@@ -77,27 +79,43 @@ public class PurchaseListActivity extends AppCompatActivity {
         @Override
         protected void populateViewHolder(PurchaseHolder viewHolder, Purchase model, int position) {
             viewHolder.setName(model.getName());
-            viewHolder.setDesc(model.getDesc());
+            viewHolder.setQty(model.getQty());
+            viewHolder.setUnit(model.getUnit());
+            viewHolder.setBought(model.getBought());
         }
     }
 
 
     public static class PurchaseHolder extends RecyclerView.ViewHolder {
         private final TextView mNameField;
-        private final TextView mDescField;
+        private final TextView mQtyField;
+        private final TextView mUnitField;
+        private final CheckBox mBoughtField;
 
         public PurchaseHolder(View itemView) {
             super(itemView);
-            mNameField = itemView.findViewById(R.id.tv_name);
-            mDescField = itemView.findViewById(R.id.tv_description);
+            mNameField = itemView.findViewById(R.id.tv_activity_purchase_list_item_name);
+            mQtyField = itemView.findViewById(R.id.tv_activity_purchase_list_item_qty);
+            mUnitField = itemView.findViewById(R.id.tv_activity_purchase_list_item_unit);
+            mBoughtField = itemView.findViewById(R.id.cb_activity_purchase_list_item_bought);
         }
 
         public void setName(String name) {
             mNameField.setText(name);
         }
 
-        void setDesc(String description) {
-            mDescField.setText(description);
+        void setQty(Double qty) {
+            String aaa = String.format(Locale.getDefault(), "%10.2f", qty);
+            mQtyField.setText(aaa);
         }
+
+        void setUnit(String unit) {
+            mUnitField.setText(unit);
+        }
+
+        void setBought(Boolean bought) {
+            mBoughtField.setChecked(bought);
+        }
+
     }
 }
