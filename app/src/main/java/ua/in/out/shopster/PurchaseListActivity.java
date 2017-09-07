@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -56,6 +57,10 @@ public class PurchaseListActivity extends AppCompatActivity {
                 R.layout.activity_purchase_list_item,
                 mPurchasesDatabaseReference);
 
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback((PurchaseListAdapter) mAdapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(mPurchasesRecyclerView);
+
         mPurchasesRecyclerView.setAdapter(mAdapter);
     }
 
@@ -66,7 +71,7 @@ public class PurchaseListActivity extends AppCompatActivity {
     }
 
 
-    public class PurchaseListAdapter extends FirebaseRecyclerAdapter<Purchase, PurchaseHolder> {
+    public class PurchaseListAdapter extends FirebaseRecyclerAdapter<Purchase, PurchaseHolder> implements ItemTouchHelperAdapter {
 
         /**
          * @param modelClass  Firebase will marshall the data at a location into an instance of a class that you provide
@@ -86,6 +91,21 @@ public class PurchaseListActivity extends AppCompatActivity {
             viewHolder.setQty(model.getQty());
             viewHolder.setUnit(model.getUnit());
             viewHolder.setBought(model.getBought());
+        }
+
+        @Override
+        public boolean onItemMove(int fromPosition, int toPosition) {
+            return false;
+        }
+
+        @Override
+        public boolean onItemMoved(int fromPosition, int toPosition) {
+            return false;
+        }
+
+        @Override
+        public void onItemDismiss(int position) {
+            getRef(position).removeValue();
         }
     }
 
