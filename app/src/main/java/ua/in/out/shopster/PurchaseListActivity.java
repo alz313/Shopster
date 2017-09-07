@@ -52,7 +52,7 @@ public class PurchaseListActivity extends AppCompatActivity {
         mAdapter = new PurchaseListAdapter(
                 Purchase.class,
                 R.layout.activity_purchase_list_item,
-                mPurchasesDatabaseReference);
+                mPurchasesDatabaseReference.orderByChild("bought"));
 
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback((PurchaseListAdapter) mAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
