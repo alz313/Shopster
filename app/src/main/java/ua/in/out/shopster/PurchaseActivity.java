@@ -12,8 +12,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Locale;
-
 public class PurchaseActivity extends AppCompatActivity {
     public static final String EXTRA_PURCHASE_ID = "purchase_push_id";
 
@@ -49,7 +47,8 @@ public class PurchaseActivity extends AppCompatActivity {
                     mPurchase = dataSnapshot.getValue(Purchase.class);
 
                     mName.setText(mPurchase.getName());
-                    mQty.setText(String.format(Locale.getDefault(), "%10.2f", mPurchase.getQty()));
+                    // TODO: Uee String.format
+                    mQty.setText(Double.toString(mPurchase.getQty()));
                     mUnit.setText(mPurchase.getUnit());
                     mIsBought.setChecked(mPurchase.getBought());
                 }
@@ -76,7 +75,16 @@ public class PurchaseActivity extends AppCompatActivity {
 
         mPurchase.setName(mName.getText().toString());
         mPurchase.setUnit(mUnit.getText().toString());
-        mPurchase.setQty(Double.valueOf(mQty.getText().toString()));
+
+        double price = 0d;
+        try {
+            price = Double.parseDouble(mQty.getText().toString().replaceAll("S\\$|\\.$", ""));
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Please enter a valid number", Toast.LENGTH_SHORT).show();
+        }
+        mPurchase.setQty(price);
+
+
         mPurchase.setBought(mIsBought.isChecked());
 
         if (mPurchasePushId != null) {

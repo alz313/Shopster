@@ -16,8 +16,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-import java.util.Locale;
-
 
 public class PurchaseListActivity extends AppCompatActivity {
     RecyclerView mPurchasesRecyclerView;
@@ -79,6 +77,7 @@ public class PurchaseListActivity extends AppCompatActivity {
         @Override
         protected void populateViewHolder(PurchaseHolder viewHolder, Purchase model, int position) {
             viewHolder.setName(model.getName());
+            viewHolder.setTag(getRef(position).getKey());
             viewHolder.setQty(model.getQty());
             viewHolder.setUnit(model.getUnit());
             viewHolder.setBought(model.getBought());
@@ -95,6 +94,16 @@ public class PurchaseListActivity extends AppCompatActivity {
         public PurchaseHolder(View itemView) {
             super(itemView);
             mNameField = itemView.findViewById(R.id.tv_activity_purchase_list_item_name);
+
+            mNameField.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), PurchaseActivity.class);
+                    intent.putExtra(PurchaseActivity.EXTRA_PURCHASE_ID, (String) mNameField.getTag());
+                    v.getContext().startActivity(intent);
+                }
+            });
+
             mQtyField = itemView.findViewById(R.id.tv_activity_purchase_list_item_qty);
             mUnitField = itemView.findViewById(R.id.tv_activity_purchase_list_item_unit);
             mBoughtField = itemView.findViewById(R.id.cb_activity_purchase_list_item_bought);
@@ -105,8 +114,8 @@ public class PurchaseListActivity extends AppCompatActivity {
         }
 
         void setQty(Double qty) {
-            String aaa = String.format(Locale.getDefault(), "%10.2f", qty);
-            mQtyField.setText(aaa);
+            // TODO: Use formatter.format https://developer.android.com/reference/java/util/Formatter.html
+            mQtyField.setText(Double.toString(qty));
         }
 
         void setUnit(String unit) {
@@ -115,6 +124,10 @@ public class PurchaseListActivity extends AppCompatActivity {
 
         void setBought(Boolean bought) {
             mBoughtField.setChecked(bought);
+        }
+
+        void setTag(String pushId) {
+            mNameField.setTag(pushId);
         }
 
     }
