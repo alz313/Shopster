@@ -2,28 +2,45 @@ package ua.in.out.shopster;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
+import java.util.Arrays;
+
 
 public class PurchaseListActivity extends AppCompatActivity {
-    RecyclerView mPurchasesRecyclerView;
+    public static final int RC_SIGN_IN = 1;
 
-    FirebaseDatabase mFirebaseDatabase;
-    DatabaseReference mPurchasesDatabaseReference;
-    FirebaseRecyclerAdapter mAdapter;
+    private RecyclerView mPurchasesRecyclerView;
+
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mPurchasesDatabaseReference;
+    private FirebaseRecyclerAdapter mAdapter;
+
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +76,29 @@ public class PurchaseListActivity extends AppCompatActivity {
         touchHelper.attachToRecyclerView(mPurchasesRecyclerView);
 
         mPurchasesRecyclerView.setAdapter(mAdapter);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                if (firebaseUser != null) {
+                    // already signed in
+                    onSignedInInitialize();
+                } else {
+                    // not signed in
+                    onSignedOutCleanup();
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                                    .setAvailableProviders(
+                                            Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
     }
 
     @Override
@@ -67,6 +107,71 @@ public class PurchaseListActivity extends AppCompatActivity {
         mAdapter.cleanup();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+
+            // Successfully signed in
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(PurchaseListActivity.this, "You logged in", Toast.LENGTH_SHORT).show();
+            } else {
+                // Sign in failed
+                if (response == null) {
+                    // User pressed back button
+                    Snackbar.make(mPurchasesRecyclerView, R.string.sign_in_cancelled, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    return;
+                }
+
+                if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
+                    Snackbar.make(mPurchasesRecyclerView, R.string.no_internet_connection, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    return;
+                }
+
+                if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                    Snackbar.make(mPurchasesRecyclerView, R.string.unknown_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out_menu:
+                //Sign out
+                AuthUI.getInstance().signOut(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+    }
+
+
+    private void onSignedInInitialize() {
+    }
+
+    private void onSignedOutCleanup() {
+    }
 
     public class PurchaseListAdapter extends FirebaseRecyclerAdapter<Purchase, PurchaseHolder> implements ItemTouchHelperAdapter {
 
@@ -76,14 +181,11 @@ public class PurchaseListActivity extends AppCompatActivity {
 
         @Override
         protected void populateViewHolder(PurchaseHolder viewHolder, Purchase model, int position) {
-
-
             viewHolder.setName(model.getName());
             viewHolder.setQty(model.getQty());
             viewHolder.setUnit(model.getUnit());
             viewHolder.setBought(model.getBought());
             viewHolder.setDatabaseReference(getRef(position));
-
         }
 
         @Override

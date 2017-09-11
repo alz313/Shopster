@@ -2,4 +2,8 @@
     <string name="app_name">Shopster</string>
     <string name="quantity">Quantity</string>
     <string name="bought">Bought</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_in_cancelled">Sing in cancelled</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>
