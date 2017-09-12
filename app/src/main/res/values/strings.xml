@@ -6,4 +6,7 @@
     <string name="sign_in_cancelled">Sing in cancelled</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="unknown_error">Unknown error</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
